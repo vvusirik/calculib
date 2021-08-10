@@ -1,10 +1,8 @@
 package expression
 
-abstract class Expression {
-  def toString: String
-}
+abstract class Expression
 
-case class Constant(val value: Float) extends Expression { 
+case class Constant(val value: Double) extends Expression { 
   override def toString: String = value.toString
 }
 
