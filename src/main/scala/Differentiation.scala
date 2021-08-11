@@ -9,6 +9,7 @@ object Derivative {
     case Add(left, right) => Add(differentiate(left), differentiate(right))
     case Sub(left, right) => Sub(differentiate(left), differentiate(right))
     case Mul(left, right) => Add(Mul(left, differentiate(right)), Mul(differentiate(left), right))
+    case Div(left, right) => Div(Sub(Mul(differentiate(left), right), Mul(left, differentiate(right))), Pow(right, Constant(2)))
     case Neg(expr) => Neg(differentiate(expr))
     case Pow(expression: Expression, power) => Mul(differentiate(expression), Mul(power, Pow(expression, Constant(power.value -1))))
     case Sin(expr: Expression) => Mul(differentiate(expr), Cos(expr))
