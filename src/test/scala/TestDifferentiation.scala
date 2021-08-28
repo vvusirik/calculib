@@ -37,11 +37,23 @@ class DifferentiationProperties extends Properties("Differentiation") {
   } yield Div(left, right)
 
   def expressions: Gen[Expression] = Gen.lzy(Gen.oneOf(constants, variables, addExprs, subExprs))
+
+  implicit lazy val arbConstant: Arbitrary[Constant] = Arbitrary(constants)
+  implicit lazy val arbVariable: Arbitrary[Variable] = Arbitrary(variables)
   implicit lazy val arbExpression: Arbitrary[Expression] = Arbitrary(expressions)
+
+  property("Derivative of constant is 0") = forAll {(c: Constant) =>
+    differentiate(c) == Constant(0)
+  }
+
+  property("Derivative of variable is 1") = forAll {(v: Variable) =>
+    differentiate(v) == Constant(1)
+  }
 
   property("Sum of derivatives is derivative of sum") = forAll { (a: Expression, b: Expression) =>
     Add(differentiate(a), differentiate(b)) == differentiate(Add(a, b))
   }
+
   property("Difference of derivatives is derivative of difference") = forAll { (a: Expression, b: Expression) =>
     Sub(differentiate(a), differentiate(b)) == differentiate(Sub(a, b))
   }
